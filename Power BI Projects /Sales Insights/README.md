@@ -13,9 +13,9 @@ Sales data sat in a MySQL database. Getting answers such as "who are our biggest
 - **Dashboard:** revenue, sales quantity and revenue trend, plus the top 5 customers and top 5 products, with filters for drilling in.
 
 ## What the data showed
-- **Total revenue of 984.87M across 2M units sold** (2017–2020).
+- **Total revenue of 984.87M across 2M units sold**, from 150,283 transactions (Oct 2017 – Jun 2020).
 - **Revenue is concentrated:** Delhi NCR brings in about 53% of revenue, and the top customer (Electricalsara Stores) about 42%. That is a dependency risk worth flagging to the business.
-- **Data quality gap:** the largest "product" in the top 5 is **(Blank)**, about 48% of revenue, meaning many transactions have no product code. Fixing this at the source would be the first recommendation before using product-level figures.
+- **Data quality gap:** the largest "product" in the top 5 is **(Blank)**: 60 product codes used in sales are missing from the product master table, covering about 47.5% of revenue. Fixing the product master would be the first recommendation before using product-level figures.
 - **Revenue trend** peaks in early 2018 and declines towards 2020.
 
 ## Tools
