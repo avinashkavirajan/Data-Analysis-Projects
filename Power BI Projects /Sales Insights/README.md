@@ -1,17 +1,25 @@
-# Analysis Outline:
-This project is an interactive dashboard project built on Power BI from the perspective of the business. The data is obtained from a 
-hardware Company database. This is a company that supplies hardware and peripherals to many of the clients.
+# Sales Insights Dashboard (Power BI)
 
-In this short project, we get the database from MySQL to Power Bi and done some ETL, data modelling and reports created using Power BI.
-This project focuses on sales insights like 
+An interactive Power BI dashboard that gives a hardware company's sales team a quick view of performance, built from the company's MySQL sales database.
 
-      • Top 5 products
-      • Top 5 customers
-      • revenue
-      • sales quantity
-      • revenue trend etc. 
+![Sales Insights dashboard](dashboard.png)
+
+## The problem
+Sales data sat in a MySQL database. Getting answers such as "who are our biggest customers?" or "is revenue going up?" meant querying the database each time.
+
+## What I built
+- **ETL:** extracted the sales data from MySQL and cleaned it in Power Query.
+- **Data model:** related the sales transactions to customers, products and dates.
+- **Dashboard:** revenue, sales quantity and revenue trend, plus the top 5 customers and top 5 products, with filters for drilling in.
+
+## Tools
+Power BI · MySQL · SQL · Power Query
 
 ## Files
-Folder contains the database, the dashboard (in pbix).
+| File | What it is |
+|---|---|
+| `*.pbix` | The Power BI report (open in Power BI Desktop) |
+| `dashboard.png` | Screenshot of the dashboard |
 
-<img width="536" alt="Power BI sales insights" src="https://user-images.githubusercontent.com/71408369/112042190-9e3c5a80-8b1d-11eb-948e-0fc391ab0ca2.png">
+---
+Portfolio: [nashkavirajan.wixsite.com/avinash-kavirajan](https://nashkavirajan.wixsite.com/avinash-kavirajan)
