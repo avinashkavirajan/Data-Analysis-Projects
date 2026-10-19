@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sales Insights Dashboard | Avinash Kavirajan</title>
+<meta name="description" content="A Power BI dashboard built from a hardware company's MySQL sales database, and the data-quality review behind it. By Avinash Kavirajan.">
+<meta property="og:title" content="Sales Insights Dashboard | Avinash Kavirajan">
+<meta property="og:description" content="Power BI dashboard from 150,283 sales transactions, with a data-quality review: 47.5% of revenue sat on product codes missing from the product master.">
+<meta property="og:image" content="https://avinashkavirajan.github.io/Data-Analysis-Projects/thumbnail.png">
+<meta property="og:url" content="https://avinashkavirajan.github.io/Data-Analysis-Projects/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F3F5F4; --sheet:#FFFFFF; --ink:#16212B; --muted:#56636D; --rule:#D3DADC;
+  --flag:#B3261E; --flag-bg:#FBE9E7; --ok:#1B6A4C; --ok-bg:#E3F2EA; --focus:#2457C5;
+}
+@media (prefers-color-scheme: dark){
+  :root{--paper:#141A1F;--sheet:#1C242B;--ink:#E8EDEF;--muted:#A3AFB7;--rule:#33404A;--flag:#F08A80;--flag-bg:#3A1F1D;--ok:#7FD3AE;--ok-bg:#173327;--focus:#8EB0FF}
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Public Sans",system-ui,sans-serif;font-size:17px;line-height:1.6;font-feature-settings:"tnum" 1}
+a{color:inherit;text-decoration-thickness:1px;text-underline-offset:3px}
+a:focus-visible{outline:2px solid var(--focus);outline-offset:3px;border-radius:2px}
+.wrap{max-width:760px;margin:0 auto;padding:0 20px}
+.wide{max-width:1040px;margin:0 auto;padding:0 20px}
+header.top{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:22px 0;font-size:15px;color:var(--muted)}
+header.top strong{color:var(--ink);font-weight:700}
+header.top nav{display:flex;gap:18px;flex-wrap:wrap}
+.hero{padding:48px 0 56px}
+.hero h1{font-size:clamp(34px,6vw,56px);line-height:1.05;letter-spacing:-0.02em;font-weight:800;margin:0 0 22px;max-width:17ch}
+.hero .lede{font-size:20px;line-height:1.55;color:var(--muted);max-width:60ch;margin:0 0 36px}
+.ledger{background:var(--sheet);border:1px solid var(--rule);border-left:4px solid var(--ink);overflow-x:auto}
+.ledger table{border:0;margin:0;font-size:15px}
+.ledger th,.ledger td{white-space:nowrap}
+.ledger tr.miss td{background:var(--flag-bg)}
+.ledger tr.miss td.code{color:var(--flag);font-weight:700}
+.ledger td.code span{font-size:12px;font-weight:600;margin-left:8px;color:var(--flag)}
+.ledger tr.hit td.code{color:var(--ok);font-weight:600}
+.caption{font-size:15px;color:var(--muted);margin:14px 0 0;max-width:64ch}
+section{padding:56px 0;border-top:1px solid var(--rule)}
+h2{font-size:30px;line-height:1.2;letter-spacing:-0.01em;font-weight:800;margin:0 0 14px}
+h3{font-size:19px;line-height:1.3;font-weight:700;margin:28px 0 8px}
+p{margin:0 0 16px;max-width:68ch}
+.facts{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--rule);background:var(--sheet);margin:28px 0 0}
+.facts div{padding:16px 18px;border-right:1px solid var(--rule)}
+.facts div:last-child{border-right:0}
+.facts b{display:block;font-size:26px;font-weight:800;line-height:1.1}
+.facts span{font-size:14px;line-height:1.4;color:var(--muted);display:block;margin-top:4px}
+.flow{list-style:none;margin:24px 0 0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--rule);background:var(--sheet);counter-reset:s}
+.flow li{padding:18px;border-right:1px solid var(--rule);counter-increment:s}
+.flow li:last-child{border-right:0}
+.flow b{display:flex;gap:8px;align-items:baseline;font-size:16px;margin-bottom:6px}
+.flow b::before{content:counter(s);font-size:13px;font-weight:700;color:var(--sheet);background:var(--ink);min-width:22px;height:22px;border-radius:11px;display:inline-grid;place-items:center}
+.flow p{font-size:15px;margin:0;color:var(--muted)}
+figure{margin:28px 0 0}
+figure a{display:block;cursor:zoom-in}
+.shot{background:var(--sheet);border:1px solid var(--rule);display:block;width:100%;height:auto}
+figcaption{font-size:14px;color:var(--muted);margin-top:8px}
+table{width:100%;border-collapse:collapse;background:var(--sheet);border:1px solid var(--rule);font-size:16px;margin:20px 0 8px}
+th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--rule);vertical-align:top}
+th{font-weight:700;font-size:14px;color:var(--muted)}
+td.n{font-weight:700;white-space:nowrap}
+.note{font-size:14px;color:var(--muted)}
+ul.plain{padding-left:20px;margin:0 0 16px;max-width:68ch}
+ul.plain li{margin:6px 0}
+.stack{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 0;padding:0;list-style:none}
+.stack li{border:1px solid var(--rule);background:var(--sheet);padding:6px 12px;font-size:15px}
+footer{border-top:1px solid var(--rule);padding:36px 0 56px;font-size:15px;color:var(--muted)}
+@media (max-width:760px){
+  body{font-size:16px}
+  .facts,.flow{grid-template-columns:1fr 1fr}
+  .facts div:nth-child(2),.flow li:nth-child(2){border-right:0}
+  .facts div:nth-child(-n+2),.flow li:nth-child(-n+2){border-bottom:1px solid var(--rule)}
+  table{font-size:14.5px}
+  th,td{padding:9px 10px}
+  td.n{white-space:normal}
+  table{word-break:break-word}
+  header.top{flex-direction:column;gap:6px}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <span><strong>Avinash Kavirajan</strong> &nbsp;Portfolio project</span>
+    <nav aria-label="Page sections">
+      <a href="#built">What I built</a>
+      <a href="#findings">Findings</a>
+      <a href="#quality">Data quality</a>
+      <a href="https://nashkavirajan.wixsite.com/avinash-kavirajan">Portfolio</a>
+      <a href="https://www.linkedin.com/in/nash-k">LinkedIn</a>
+    </nav>
+  </header>
+
+  <div class="hero">
+    <h1>A sales dashboard, and the data problem it uncovered</h1>
+    <p class="lede">A hardware company's sales team kept three years of transactions in a MySQL database but had no quick way to see performance. I built a Power BI dashboard to answer their everyday questions, and found that almost half of the revenue couldn't be traced back to a product.</p>
+
+    <div class="ledger" role="figure" aria-label="Sample transactions from the source data">
+      <table>
+        <thead><tr><th scope="col">Product code</th><th scope="col">Customer</th><th scope="col">Market</th><th scope="col">Date</th><th scope="col">Amount</th></tr></thead>
+        <tbody>
+          <tr class="hit"><td class="code">Prod114</td><td>Electricalsopedia Stores</td><td>Nagpur</td><td>2020-05-26</td><td>171</td></tr>
+          <tr class="miss"><td class="code">Prod319<span>not in product list</span></td><td>Electricalsara Stores</td><td>Delhi NCR</td><td>2019-08-06</td><td>176,273</td></tr>
+          <tr class="hit"><td class="code">Prod278</td><td>Power</td><td>Nagpur</td><td>2018-01-31</td><td>97</td></tr>
+          <tr class="miss"><td class="code">Prod312<span>not in product list</span></td><td>Propel</td><td>Bhopal</td><td>2017-10-31</td><td>1,565</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="caption">Real rows from the source data (amounts in INR). 60 product codes used in sales are missing from the product master table, so Power BI shows them as "(Blank)": 36.7% of transactions and 47.5% of revenue.</p>
+
+    <div class="facts">
+      <div><b>150,283</b><span>sales transactions, Oct 2017 – Jun 2020</span></div>
+      <div><b>53%</b><span>of revenue from one market</span></div>
+      <div><b>42%</b><span>of revenue from one customer</span></div>
+      <div><b>47.5%</b><span>of revenue with no matching product</span></div>
+    </div>
+  </div>
+</div>
+
+<section id="problem">
+  <div class="wrap">
+    <h2>The problem</h2>
+    <p>The sales data covered 38 customers, 14 Indian cities and about 340 product codes. Simple questions such as "who are our biggest customers?", "which markets drive revenue?" or "is revenue going up?" meant writing a new database query every time.</p>
+    <p>The goal was one dashboard a sales manager could open, filter by year or month, and read in a minute.</p>
+  </div>
+</section>
+
+<section id="built">
+  <div class="wide">
+    <div class="wrap">
+      <h2>What I built</h2>
+      <p>The data moves from the company's database to the dashboard in four steps.</p>
+    </div>
+    <ol class="flow">
+      <li><b>Extract</b><p>Loaded five MySQL tables: transactions, customers, products, markets and dates.</p></li>
+      <li><b>Clean</b><p>Prepared the data in Power Query before modelling.</p></li>
+      <li><b>Model</b><p>Linked each sale to its customer, product, market and date in a data model.</p></li>
+      <li><b>Visualise</b><p>Revenue, quantity, trend, markets, and the top 5 customers and products, filterable by year and month.</p></li>
+    </ol>
+    <figure><img class="shot" src="Power%20BI%20Projects%20/Sales%20Insights/dashboard.png" alt="Sales Insights dashboard in Power BI showing revenue, sales quantity, revenue by market, revenue trend, top 5 customers and top 5 products"><figcaption>The finished dashboard. Click to open full size.</figcaption></figure>
+  </div>
+</section>
+
+<section id="findings">
+  <div class="wrap">
+    <h2>What the dashboard shows</h2>
+    <table>
+      <thead><tr><th scope="col">Finding</th><th scope="col">Figure</th><th scope="col">Why it matters</th></tr></thead>
+      <tbody>
+        <tr><td>Revenue depends on one market</td><td class="n">53%</td><td>Delhi NCR brings in more than all other markets combined. A slowdown there would hit the whole business.</td></tr>
+        <tr><td>Revenue depends on one customer</td><td class="n">42%</td><td>Electricalsara Stores alone is worth over eight times the next customer. That is a key-account risk worth managing.</td></tr>
+        <tr><td>Revenue is trending down</td><td class="n">Peak Jan 2018</td><td>Monthly revenue peaked in early 2018 and has drifted lower since, with a sharp drop in the final month (which may be incomplete).</td></tr>
+        <tr><td>The top "product" is unknown</td><td class="n">47.5%</td><td>The largest bar in Top 5 Products is "(Blank)", so product-level decisions can't be trusted yet. See below.</td></tr>
+      </tbody>
+    </table>
+    <p class="note">Percentages are shares of total revenue in the source data.</p>
+  </div>
+</section>
+
+<section id="quality">
+  <div class="wrap">
+    <h2>Data quality review</h2>
+    <p>A dashboard is only as good as the data behind it. Checking the source tables directly showed several issues a business user would never see on the charts.</p>
+    <table>
+      <thead><tr><th scope="col">Issue</th><th scope="col">Size</th><th scope="col">Recommendation</th></tr></thead>
+      <tbody>
+        <tr><td>Product codes used in sales but missing from the product master</td><td class="n">60 codes · 55,159 rows</td><td>Add the missing products at the source; until then, label "(Blank)" clearly on the dashboard.</td></tr>
+        <tr><td>Sales with a zero or negative amount</td><td class="n">1,611 rows</td><td>Confirm whether these are returns, free samples or errors, and filter or flag them.</td></tr>
+        <tr><td>Currency values with hidden characters ("INR" and "INR" plus a line break), and 4 rows in USD</td><td class="n">All 150,283 rows</td><td>Standardise the currency field and convert or remove USD rows before summing revenue.</td></tr>
+        <tr><td>The same market listed twice under two codes (Bhopal)</td><td class="n">2 codes</td><td>Merge to one market code so totals aren't split.</td></tr>
+        <tr><td>Markets with no sales (New York, Paris) and no zone</td><td class="n">2 markets</td><td>Remove or tag as test data so they don't appear in filters.</td></tr>
+      </tbody>
+    </table>
+    <p>This is the part of the work I'd take into a real engagement: the charts answer the business's questions, and the data review tells them which answers they can rely on.</p>
+  </div>
+</section>
+
+<section id="built-with">
+  <div class="wrap">
+    <h2>Built with</h2>
+    <ul class="stack">
+      <li>Power BI</li>
+      <li>Power Query</li>
+      <li>MySQL</li>
+      <li>SQL</li>
+      <li>Data modelling</li>
+    </ul>
+    <h3>More detail</h3>
+    <ul class="plain">
+      <li><a href="https://github.com/avinashkavirajan/Data-Analysis-Projects/tree/main/Power%20BI%20Projects%20/Sales%20Insights">Power BI report (.pbix) and SQL data on GitHub</a></li>
+      <li><a href="https://avinashkavirajan.github.io/regulatory-change-agent/">Also see: Regulatory Change Agent, an AI agent for regulatory compliance</a></li>
+    </ul>
+  </div>
+</section>
+
+<div class="wrap">
+  <footer>
+    Portfolio project by Avinash Kavirajan. The dataset is a sample sales database for a fictional hardware company, used for learning purposes.
+  </footer>
+</div>
+
+<script>
+document.querySelectorAll('img.shot').forEach(function(img){
+  var a=document.createElement('a');a.href=img.getAttribute('src');a.target='_blank';a.rel='noopener';
+  a.title='Open full size';img.parentNode.insertBefore(a,img);a.appendChild(img);
+});
+</script>
+</body>
+</html>

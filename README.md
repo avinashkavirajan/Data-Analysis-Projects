@@ -6,9 +6,9 @@ Portfolio: [nashkavirajan.wixsite.com/avinash-kavirajan](https://nashkavirajan.w
 
 ## Projects
 
-| Project | What it shows | Tools |
-|---|---|---|
-| [Sales Insights Dashboard](./Power%20BI%20Projects%20/Sales%20Insights) | Revenue, sales quantity, revenue trend, and top 5 customers and products for a hardware company | Power BI, MySQL, SQL, Power Query |
+| Project | What it shows | Case study | Files |
+|---|---|---|---|
+| Sales Insights Dashboard | Revenue, markets, top customers and products from 150,283 sales transactions, plus a data-quality review | [Read the case study](https://avinashkavirajan.github.io/Data-Analysis-Projects/) | [Report and data](./Power%20BI%20Projects%20/Sales%20Insights) |
 
 ## Also see
 **[Regulatory Change Agent](https://avinashkavirajan.github.io/regulatory-change-agent/)**: an AI agent built in Microsoft Copilot Studio that maps regulatory changes to company procedures and routes change requests for human approval in Microsoft Teams.
