@@ -2,6 +2,8 @@
 
 An interactive Power BI dashboard that gives a hardware company's sales team a quick view of performance, built from the company's MySQL sales database.
 
+**Case study:** https://avinashkavirajan.github.io/Data-Analysis-Projects/
+
 ![Sales Insights dashboard](dashboard.png)
 
 ## The problem
